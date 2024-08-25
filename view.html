@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title id="page-title"></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link type="text/css" rel="stylesheet" href="./static/global.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
+</head>
+<body>
+    <span id="top"></span>
+    <a href="./index.html" id="back_button" title="Back to Home" class="button">Back to index</a>
+    <a href="#top" id="back-to-top" title="Back to the Top" class="button">Top</a>
+    <div id="content"></div>
+
+    <script>
+        const content = document.getElementById('content');
+        const pageTitle = document.getElementById('page-title');
+
+        async function loadMarkdownFile() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const file = urlParams.get('file');
+            
+            if (!file) {
+                content.innerHTML = '<p>No file specified!</p>';
+                return;
+            }
+
+            pageTitle.textContent = ".md Viewer | File: " + file;
+
+            const filePath = `./md_files/${file}`;
+
+            try {
+                const response = await fetch(filePath);
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to load ${file}`);
+                }
+
+                const text = await response.text();
+
+                const converter = new showdown.Converter();
+                const html = converter.makeHtml(text);
+
+                content.innerHTML = html;
+            } catch (error) {
+                content.innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        }
+
+        window.onload = () => {
+            loadMarkdownFile();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+* {
+  font-family: Poppins, sans-serif;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  background: #131313;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+a {
+  color: #f77878;
+  text-decoration: underline;
+  transition: 0.3s;
+}
+
+a:hover {
+  color: #f9b9b9;
+}
+
+#content {
+  flex: 1;
+  padding: 100px 5% 10% 5%; /* Increased top padding */
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+#title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 2rem 0;
+  padding: 0;
+}
+
+#back_button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+  padding: 10px 20px;
+  font-size: 1em;
+}
+
+#top {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+#back-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10;
+  padding: 10px 20px;
+  font-size: 1em;
+}
+
+#upload_window {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #131313;
+  z-index: 20;
+  border: #131313 solid 20px;
+  border-radius: 20px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+}
+
+.button {
+  border: #181818 solid 10px;
+  border-radius: 10px;
+  background-color: #181818;
+  transition: 0.3s;
+  z-index: 1;
+  color: #f77878;
+  text-decoration: underline;
+}
+
+.button:hover {
+  background-color: #232323;
+  border: #232323 solid 10px;
+  color: #f9b9b9;
+}
+
+.submit_button {
+  border: #0099ff solid 10px;
+  border-radius: 10px;
+  background-color: #0099ff;
+  transition: 0.3s;
+  z-index: 1;
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.submit_button:hover {
+  background-color: #0066ff;
+  border: #0066ff solid 10px;
+  color: #ffffff;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 1em;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #232323;
+  border-radius: 100vw;
+  margin-block: 0.5em;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #f77878;
+  border-radius: 100vw;
+  border: 0.22em solid #232323;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #f9b9b9;
+}
+
+@media screen and (max-width: 768px) {
+  #content {
+    padding: 80px 20px 60px 20px;
+  }
+
+  #title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #content {
+    padding: 70px 15px 50px 15px;
+  }
+
+  #back_button,
+  #back-to-top {
+    padding: 8px 16px;
+    font-size: 0.9em;
+  }
+
+  #title {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+}
+
+#select_files,
+#remove_selected {
+  margin-left: 10px;
+}
+
+#Files {
+  list-style-type: disc !important; /* Force disc style */
+  padding-left: 20px !important;
+}
+
+#Files li {
+  display: list-item !important; /* Force list-item display */
+  color: white;
+  padding: 5px 10px; /* Add some padding */
+  margin-bottom: 5px; /* Space between items */
+}
+
+#Files li::marker {
+  color: #ffffff !important; /* Make the bullet point the same color as the link */
+  content: "\2022"; /* Unicode for bullet point */
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+  position: absolute;
+  text-align: center;
+}
+
+#Files li a {
+  color: #f77878 !important;
+  text-decoration: none; /* Remove underline for cleaner look */
+}
+
+#Files li a:hover {
+  text-decoration: underline; /* Add underline on hover */
+}
+
+#Files li input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.remove-button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.remove-button:hover {
+  background-color: #ff6666;
+}

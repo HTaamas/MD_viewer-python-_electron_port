@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>.md Viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link type="text/css" rel="stylesheet" href="./static/global.css" />
+  </head>
+  <body>
+    <div id="content">
+      <button
+        onclick="document.getElementById('upload_window').style.display = 'block';  document.getElementById('blur').style.display = 'block';"
+        class="button"
+        style="font-weight: 700"
+      >
+        Add Files
+      </button>
+      <button id="select_files" class="button">Select</button>
+      <button id="remove_selected" class="button" style="display: none">
+        Remove Selected
+      </button>
+      <h1>Files:</h1>
+      <ul id="Files"></ul>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const fileList = document.getElementById("Files");
+          const fileInput = document.getElementById("file_input");
+          const submitButton = document.getElementById("submit");
+          const selectButton = document.getElementById("select_files");
+          const removeSelectedButton =
+            document.getElementById("remove_selected");
+          let isSelectMode = false;
+
+          async function loadMarkdownFiles() {
+            const directoryPath = "./md_files/";
+            console.log("Loading markdown files from:", directoryPath);
+            const files = await window.electronAPI.getMarkdownFiles(
+              directoryPath
+            );
+            console.log("Markdown files found:", files);
+
+            fileList.innerHTML = "";
+            files.forEach((file) => {
+              const li = document.createElement("li");
+
+              if (isSelectMode) {
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.value = file;
+                li.appendChild(checkbox);
+              }
+
+              const a = document.createElement("a"); // Create an anchor element
+
+              a.textContent = file; // Set the text of the anchor to the file name
+              a.href = `./view.html?file=${encodeURIComponent(file)}`; // Set the href attribute
+              if (isSelectMode) {
+                a.onclick = (e) => e.preventDefault();
+              }
+
+              li.appendChild(a); // Append the anchor to the list item
+              fileList.appendChild(li); // Append the list item to the file list
+            });
+          }
+
+          loadMarkdownFiles();
+
+          selectButton.addEventListener("click", () => {
+            isSelectMode = !isSelectMode;
+            selectButton.textContent = isSelectMode ? "Cancel" : "Select";
+            removeSelectedButton.style.display = isSelectMode
+              ? "inline-block"
+              : "none";
+            loadMarkdownFiles();
+          });
+
+          removeSelectedButton.addEventListener("click", async () => {
+            const selectedFiles = Array.from(
+              fileList.querySelectorAll('input[type="checkbox"]:checked')
+            ).map((checkbox) => checkbox.value);
+
+            if (selectedFiles.length === 0) {
+              alert("No files selected");
+              return;
+            }
+
+            if (
+              confirm(
+                `Are you sure you want to remove ${selectedFiles.length} file(s)?`
+              )
+            ) {
+              for (const file of selectedFiles) {
+                try {
+                  await window.electronAPI.removeMarkdownFile(file);
+                } catch (error) {
+                  console.error("Error removing file:", file, error);
+                }
+              }
+              await loadMarkdownFiles();
+            }
+          });
+
+          submitButton.addEventListener("click", async () => {
+            const files = fileInput.files;
+            if (files.length > 0) {
+              for (let file of files) {
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                  const content = event.target.result;
+                  console.log("Sending file to main process:", file.name);
+                  try {
+                    const result = await window.electronAPI.saveMarkdownFile(
+                      file.name,
+                      content
+                    );
+                    console.log("Save result:", result);
+                    // Refresh file list or update UI here
+                  } catch (error) {
+                    console.error("Error saving file:", error);
+                  }
+                };
+                reader.readAsText(file);
+              }
+              // Close the upload window and refresh the file list
+              document.getElementById("upload_window").style.display = "none";
+              document.getElementById("blur").style.display = "none";
+              await loadMarkdownFiles();
+            }
+          });
+        });
+      </script>
+    </div>
+    <div
+      id="blur"
+      style="
+        filter: blur(5px);
+        z-index: 2;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        display: none;
+      "
+      onclick="document.getElementById('upload_window').style.display = 'none'; document.getElementById('blur').style.display = 'none';"
+    ></div>
+    <div id="upload_window">
+      <h1 style="margin-top: 2px; margin-bottom: 30px">Upload Files</h1>
+      <button
+        onclick="document.getElementById('upload_window').style.display = 'none'; document.getElementById('blur').style.display = 'none';"
+        class="button"
+        style="position: absolute; top: 0; right: 0; font-weight: 700"
+      >
+        Close
+      </button>
+      <span style="margin-top: 10px"></span>
+      <input type="file" id="file_input" accept=".md" multiple />
+      <input type="submit" class="submit_button" id="submit" />
+    </div>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>
